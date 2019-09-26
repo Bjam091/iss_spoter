@@ -1,3 +1,5 @@
+const request = require('request');
+
 /**
  * Makes a single API request to retrieve the user's IP address.
  * Input:
@@ -7,24 +9,19 @@
  *   - The IP address as a string (null if error). Example: "162.245.144.188"
  */
 
-const request = require('request');
  
 const fetchMyIP = function(callback) {
-  request((`https://api.ipify.org?format=json`), (error, response, body) => {
-    const data = JSON.parse(body);
-    if (typeof data.ip === "undefined") {
-      callback(error, null);
-    } else
-      callback(data, error);
+  request('https://api.ipify.org?format=json', (error, response, body) => {
+    if (error) return callback(error, null);
+
+    if (response.statusCode !== 200) {
+      callback(Error(`Status Code ${response.statusCode} when fetching IP: ${body}`), null);
+      return;
+    }
+
+    const ip = JSON.parse(body).ip;
+    callback(null, ip);
   });
 };
-
-
-
-
-
-
-
-// use request to fetch IP address from JSON API
 
 module.exports = { fetchMyIP };
