@@ -7,7 +7,9 @@ const { nextISSTimesForMyLocation } = require('./iss');
 const printTimesFlyOver = function(passTimes) {
   for (const pass of passTimes) {
     const datetime = new Date(0);
-    datetime.setUTCSeconds(pass.risetime);
+    datetime.setUTCSeconds((pass.risetime) - 25200);
+
+    // The 25,200 seconds being subtracted are to return the time in PST
     const duration = pass.duration;
     console.log(`Next pass at ${datetime} for ${duration} seconds!`);
   }
